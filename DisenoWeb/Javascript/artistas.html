@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Buscador de Artistas</title>
+	</head>
+	<body>
+		<h1>Buscador de Artistas</h1>
+		<label for="artista">Ingresa tu artista favorito</label>
+		<input type="text" id="artista" />
+		<button id="buscar">buscar</button>
+		<div id="resultado"></div>
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script>
+			var $artista = $('#artista'),
+				$buscar = $('#buscar'),
+				$resultado = $('#resultado');
+
+			function buscarArtista(){
+				var artista = $artista.val(),
+					api_key = '42f75f939105d2110d6a0daf27db431c';
+
+				$.ajax({
+					data: {
+						artist: artista,
+						api_key: api_key,
+						format: 'json',
+						method: 'artist.getinfo'
+					},
+					url: 'http://ws.audioscrobbler.com/2.0/'
+				})
+				.done ( presentarArtista )
+			};
+
+			function presentarArtista( data ){
+				var artista = data.artist,
+					html = '';
+
+				html += '<h2>' + artista.name + '</h2>';
+				html += '<figure><img src="' + artista.image[ artista.image.length - 1 ]['#text'] + '" alt=""><figcaption>' + artista.image[ artista.image.length - 1 ].size + '</figcaption></figure>';
+				html += '<p>' + artista.bio.summary + '</p>';
+
+				$resultado.html( html );
+			};
+
+			$buscar.on('click', buscarArtista);
+		</script>
+	</body>
+</html>
